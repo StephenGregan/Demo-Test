@@ -12,7 +12,13 @@ namespace ConsoleAppTestDemo
     class Program1
 
     {
-        static void Main()
+        //public Program1()
+        //    {
+        //    Rootobject root = new Rootobject();
+        //    Primarynumber num = new Primarynumber();
+           
+        //    }
+        static void Main(String [] args)
         {
             var shows = LoginAndDeserializeJson();
             Console.WriteLine(shows);
@@ -21,6 +27,7 @@ namespace ConsoleAppTestDemo
 
         public static List<Primarynumber> JsonParseCounties(string jsonText)
         {
+           
             return JsonConvert.DeserializeObject<Rootobject>(jsonText).Counties;
         }
 
@@ -42,7 +49,8 @@ namespace ConsoleAppTestDemo
                 Console.WriteLine();
                 // Download desired page
                 var json = client.DownloadString("https://tie.interpreterintelligence.com:443/api/contact/1347");
-
+                Rootobject obj = new Rootobject();
+                Primarynumber num = new Primarynumber();
                 foreach (Primarynumber c in JsonParseCounties(json))
                 {
                     Console.WriteLine(json);
@@ -81,7 +89,22 @@ namespace ConsoleAppTestDemo
 
 public class Rootobject
 {
+    public Rootobject()
+
+    {
+
+        Counties = new List<Primarynumber>();
+
+    }
+
+
+
+
+
+[JsonProperty("Everything")]
     public List<Primarynumber> Counties { get; set; }
+
+   
     //public int id { get; set; }
     //public int versionValue { get; set; }
     //public string uuid { get; set; }
