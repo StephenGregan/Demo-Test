@@ -11,13 +11,13 @@ namespace ConsoleAppTestDemo
 {
     class Program1
 
+    {
+        static void Main()
         {
-            static void Main()
-            {
-                var shows = LoginAndDeserializeJson();
-                Console.WriteLine(shows);
+            var shows = LoginAndDeserializeJson();
+            Console.WriteLine(shows);
 
-            }
+        }
 
         public static List<Primarynumber> JsonParseCounties(string jsonText)
         {
@@ -25,23 +25,23 @@ namespace ConsoleAppTestDemo
         }
 
         static string LoginAndDeserializeJson()
-            {
+        {
 
-                using (var client = new WebClient())
-                {
-                    var values = new NameValueCollection
+            using (var client = new WebClientEx())
+            {
+                var values = new NameValueCollection
             {
                 { "j_username", "patF@translation.ie" },
                 { "j_password", "Watchm3n" },
             };
-                    Console.WriteLine("Validating username and password....\n");
+                Console.WriteLine("Validating username and password....\n");
 
-                    // Authenticate
-                    client.UploadValues("https://tie.interpreterintelligence.com/j_spring_security_check", values);
-                    Console.WriteLine("Successfully logged in to ii.....");
-                    Console.WriteLine();
-                    // Download desired page
-                    var json = client.DownloadString("https://tie.interpreterintelligence.com:443/api/contact/1347");
+                // Authenticate
+                client.UploadValues("https://tie.interpreterintelligence.com/j_spring_security_check", values);
+                Console.WriteLine("Successfully logged in to ii.....");
+                Console.WriteLine();
+                // Download desired page
+                var json = client.DownloadString("https://tie.interpreterintelligence.com:443/api/contact/1347");
 
                 foreach (Primarynumber c in JsonParseCounties(json))
                 {
@@ -49,38 +49,38 @@ namespace ConsoleAppTestDemo
                 }
 
                 return json;
-                }
-
             }
 
-            /// <summary>
-            /// A custom WebClient featuring a cookie container
-            /// </summary>
+        }
 
-            public class WebClientEx : WebClient
+        /// <summary>
+        /// A custom WebClient featuring a cookie container
+        /// </summary>
+
+        public class WebClientEx : WebClient
+        {
+            public CookieContainer CookieContainer { get; private set; }
+
+            public WebClientEx()
             {
-                public CookieContainer CookieContainer { get; private set; }
+                CookieContainer = new CookieContainer();
+            }
 
-                public WebClientEx()
+            protected override WebRequest GetWebRequest(Uri address)
+            {
+                var request = base.GetWebRequest(address);
+                if (request is HttpWebRequest)
                 {
-                    CookieContainer = new CookieContainer();
+                    (request as HttpWebRequest).CookieContainer = CookieContainer;
                 }
-
-                protected override WebRequest GetWebRequest(Uri address)
-                {
-                    var request = base.GetWebRequest(address);
-                    if (request is HttpWebRequest)
-                    {
-                        (request as HttpWebRequest).CookieContainer = CookieContainer;
-                    }
-                    return request;
-                }
+                return request;
             }
         }
     }
+}
 
-        public class Rootobject
-        {
+public class Rootobject
+{
     public List<Primarynumber> Counties { get; set; }
     //public int id { get; set; }
     //public int versionValue { get; set; }
@@ -174,264 +174,270 @@ namespace ConsoleAppTestDemo
     //public string bankBranch { get; set; }
 }
 
-        public class Primarynumber
-        {
-            public int id { get; set; }
-            public string parsedNumber { get; set; }
-            public object numberFormatted { get; set; }
-            public object countryCode { get; set; }
-            public object areaCode { get; set; }
-            public object number { get; set; }
-            public int typeid { get; set; }
-            public bool primaryNumber { get; set; }
-        }
+public class Primarynumber
+{
+    public int id { get; set; }
+    public string parsedNumber { get; set; }
+    public object numberFormatted { get; set; }
+    public object countryCode { get; set; }
+    public object areaCode { get; set; }
+    public object number { get; set; }
+    public int typeid { get; set; }
+    public bool primaryNumber { get; set; }
 
-        //public class Primaryaddress
-        //{
-        //    public int id { get; set; }
-        //    public string clientid { get; set; }
-        //    public object clientLabel { get; set; }
-        //    public int companyid { get; set; }
-        //    public string customerid { get; set; }
-        //    public string customerBillingid { get; set; }
-        //    public string displayLabel { get; set; }
-        //    public object description { get; set; }
-        //    public object notes { get; set; }
-        //    public string addrEntered { get; set; }
-        //    public string addrFormatted { get; set; }
-        //    public object aptUnit { get; set; }
-        //    public object preamble { get; set; }
-        //    public object street1 { get; set; }
-        //    public object street2 { get; set; }
-        //    public object street3 { get; set; }
-        //    public object cityTown { get; set; }
-        //    public object stateCounty { get; set; }
-        //    public object postalCode { get; set; }
-        //    public object country { get; set; }
-        //    public bool primaryAddress { get; set; }
-        //    public bool valid { get; set; }
-        //    public string validationStatus { get; set; }
-        //    public bool validated { get; set; }
-        //    public int typeid { get; set; }
-        //    public float lat { get; set; }
-        //    public float lng { get; set; }
-        //    public object addressPhone { get; set; }
-        //    public object addressFax { get; set; }
-        //    public object addressEmail { get; set; }
-        //    public object contactPerson { get; set; }
-        //    public object costCenter { get; set; }
-        //    public bool active { get; set; }
-        //    public string parentid { get; set; }
-        //    public string parentlabel { get; set; }
-        //    public object publicNotes { get; set; }
-        //    public string regionid { get; set; }
-        //    public string billingRegionid { get; set; }
-        //    public object costCenterName { get; set; }
-        //    public object timeZone { get; set; }
-        //}
+    public override string ToString()
+    {
+        return $"Id : {id}\nParsed Number : {parsedNumber}\nNumber Formatted : {numberFormatted}\nCountry Code : {countryCode}\nArea Code : {areaCode}\nNumber : {number}\nType Id : {typeid}" +
+            $"Primary Number : {primaryNumber}";
+    }
+}
 
-        //public class Primaryemail
-        //{
-        //    public int id { get; set; }
-        //    public string emailAddress { get; set; }
-        //    public object addressVerified { get; set; }
-        //    public object dateVerified { get; set; }
-        //    public bool primaryEmail { get; set; }
-        //    public int typeid { get; set; }
-        //}
+//public class Primaryaddress
+//{
+//    public int id { get; set; }
+//    public string clientid { get; set; }
+//    public object clientLabel { get; set; }
+//    public int companyid { get; set; }
+//    public string customerid { get; set; }
+//    public string customerBillingid { get; set; }
+//    public string displayLabel { get; set; }
+//    public object description { get; set; }
+//    public object notes { get; set; }
+//    public string addrEntered { get; set; }
+//    public string addrFormatted { get; set; }
+//    public object aptUnit { get; set; }
+//    public object preamble { get; set; }
+//    public object street1 { get; set; }
+//    public object street2 { get; set; }
+//    public object street3 { get; set; }
+//    public object cityTown { get; set; }
+//    public object stateCounty { get; set; }
+//    public object postalCode { get; set; }
+//    public object country { get; set; }
+//    public bool primaryAddress { get; set; }
+//    public bool valid { get; set; }
+//    public string validationStatus { get; set; }
+//    public bool validated { get; set; }
+//    public int typeid { get; set; }
+//    public float lat { get; set; }
+//    public float lng { get; set; }
+//    public object addressPhone { get; set; }
+//    public object addressFax { get; set; }
+//    public object addressEmail { get; set; }
+//    public object contactPerson { get; set; }
+//    public object costCenter { get; set; }
+//    public bool active { get; set; }
+//    public string parentid { get; set; }
+//    public string parentlabel { get; set; }
+//    public object publicNotes { get; set; }
+//    public string regionid { get; set; }
+//    public string billingRegionid { get; set; }
+//    public object costCenterName { get; set; }
+//    public object timeZone { get; set; }
+//}
 
-        //public class Status
-        //{
-        //    public string _class { get; set; }
-        //    public int id { get; set; }
-        //    public bool defaultOption { get; set; }
-        //    public string description { get; set; }
-        //    public object l10nKey { get; set; }
-        //    public string name { get; set; }
-        //    public string nameKey { get; set; }
-        //}
+//public class Primaryemail
+//{
+//    public int id { get; set; }
+//    public string emailAddress { get; set; }
+//    public object addressVerified { get; set; }
+//    public object dateVerified { get; set; }
+//    public bool primaryEmail { get; set; }
+//    public int typeid { get; set; }
+//}
 
-        //public class Contacttype
-        //{
-        //    public string _class { get; set; }
-        //    public int id { get; set; }
-        //    public bool defaultOption { get; set; }
-        //    public object description { get; set; }
-        //    public object l10nKey { get; set; }
-        //    public string name { get; set; }
-        //    public string nameKey { get; set; }
-        //}
+//public class Status
+//{
+//    public string _class { get; set; }
+//    public int id { get; set; }
+//    public bool defaultOption { get; set; }
+//    public string description { get; set; }
+//    public object l10nKey { get; set; }
+//    public string name { get; set; }
+//    public string nameKey { get; set; }
+//}
 
-        //public class Languagemapping
-        //{
-        //    public int id { get; set; }
-        //    public int contactid { get; set; }
-        //    public int languageid { get; set; }
-        //    public Language language { get; set; }
-        //    public string rating { get; set; }
-        //}
+//public class Contacttype
+//{
+//    public string _class { get; set; }
+//    public int id { get; set; }
+//    public bool defaultOption { get; set; }
+//    public object description { get; set; }
+//    public object l10nKey { get; set; }
+//    public string name { get; set; }
+//    public string nameKey { get; set; }
+//}
 
-        //public class Language
-        //{
-        //    public int id { get; set; }
-        //    public string label { get; set; }
-        //    public string description { get; set; }
-        //    public string alternates { get; set; }
-        //    public string value { get; set; }
-        //    public string subtag { get; set; }
-        //    public string iso639_3Tag { get; set; }
-        //    public string type { get; set; }
-        //    public object alias { get; set; }
-        //    public bool enabled { get; set; }
-        //}
+//public class Languagemapping
+//{
+//    public int id { get; set; }
+//    public int contactid { get; set; }
+//    public int languageid { get; set; }
+//    public Language language { get; set; }
+//    public string rating { get; set; }
+//}
 
-        //public class Number
-        //{
-        //    public int id { get; set; }
-        //    public string parsedNumber { get; set; }
-        //    public object numberFormatted { get; set; }
-        //    public object countryCode { get; set; }
-        //    public object areaCode { get; set; }
-        //    public object number { get; set; }
-        //    public int typeid { get; set; }
-        //    public bool primaryNumber { get; set; }
-        //}
+//public class Language
+//{
+//    public int id { get; set; }
+//    public string label { get; set; }
+//    public string description { get; set; }
+//    public string alternates { get; set; }
+//    public string value { get; set; }
+//    public string subtag { get; set; }
+//    public string iso639_3Tag { get; set; }
+//    public string type { get; set; }
+//    public object alias { get; set; }
+//    public bool enabled { get; set; }
+//}
 
-        //public class Address
-        //{
-        //    public int id { get; set; }
-        //    public string clientid { get; set; }
-        //    public object clientLabel { get; set; }
-        //    public int companyid { get; set; }
-        //    public string customerid { get; set; }
-        //    public string customerBillingid { get; set; }
-        //    public string displayLabel { get; set; }
-        //    public object description { get; set; }
-        //    public object notes { get; set; }
-        //    public string addrEntered { get; set; }
-        //    public string addrFormatted { get; set; }
-        //    public object aptUnit { get; set; }
-        //    public object preamble { get; set; }
-        //    public object street1 { get; set; }
-        //    public object street2 { get; set; }
-        //    public object street3 { get; set; }
-        //    public object cityTown { get; set; }
-        //    public object stateCounty { get; set; }
-        //    public object postalCode { get; set; }
-        //    public object country { get; set; }
-        //    public bool primaryAddress { get; set; }
-        //    public bool valid { get; set; }
-        //    public string validationStatus { get; set; }
-        //    public bool validated { get; set; }
-        //    public int typeid { get; set; }
-        //    public float lat { get; set; }
-        //    public float lng { get; set; }
-        //    public object addressPhone { get; set; }
-        //    public object addressFax { get; set; }
-        //    public object addressEmail { get; set; }
-        //    public object contactPerson { get; set; }
-        //    public object costCenter { get; set; }
-        //    public bool active { get; set; }
-        //    public string parentid { get; set; }
-        //    public string parentlabel { get; set; }
-        //    public object publicNotes { get; set; }
-        //    public string regionid { get; set; }
-        //    public string billingRegionid { get; set; }
-        //    public object costCenterName { get; set; }
-        //    public object timeZone { get; set; }
-        //}
+//public class Number
+//{
+//    public int id { get; set; }
+//    public string parsedNumber { get; set; }
+//    public object numberFormatted { get; set; }
+//    public object countryCode { get; set; }
+//    public object areaCode { get; set; }
+//    public object number { get; set; }
+//    public int typeid { get; set; }
+//    public bool primaryNumber { get; set; }
+//}
 
-        //public class Email
-        //{
-        //    public int id { get; set; }
-        //    public string emailAddress { get; set; }
-        //    public object addressVerified { get; set; }
-        //    public object dateVerified { get; set; }
-        //    public bool primaryEmail { get; set; }
-        //    public int typeid { get; set; }
-        //}
+//public class Address
+//{
+//    public int id { get; set; }
+//    public string clientid { get; set; }
+//    public object clientLabel { get; set; }
+//    public int companyid { get; set; }
+//    public string customerid { get; set; }
+//    public string customerBillingid { get; set; }
+//    public string displayLabel { get; set; }
+//    public object description { get; set; }
+//    public object notes { get; set; }
+//    public string addrEntered { get; set; }
+//    public string addrFormatted { get; set; }
+//    public object aptUnit { get; set; }
+//    public object preamble { get; set; }
+//    public object street1 { get; set; }
+//    public object street2 { get; set; }
+//    public object street3 { get; set; }
+//    public object cityTown { get; set; }
+//    public object stateCounty { get; set; }
+//    public object postalCode { get; set; }
+//    public object country { get; set; }
+//    public bool primaryAddress { get; set; }
+//    public bool valid { get; set; }
+//    public string validationStatus { get; set; }
+//    public bool validated { get; set; }
+//    public int typeid { get; set; }
+//    public float lat { get; set; }
+//    public float lng { get; set; }
+//    public object addressPhone { get; set; }
+//    public object addressFax { get; set; }
+//    public object addressEmail { get; set; }
+//    public object contactPerson { get; set; }
+//    public object costCenter { get; set; }
+//    public bool active { get; set; }
+//    public string parentid { get; set; }
+//    public string parentlabel { get; set; }
+//    public object publicNotes { get; set; }
+//    public string regionid { get; set; }
+//    public string billingRegionid { get; set; }
+//    public object costCenterName { get; set; }
+//    public object timeZone { get; set; }
+//}
 
-        //public class Qualification
-        //{
-        //    public int id { get; set; }
-        //    public string createdDate { get; set; }
-        //    public string createdBy { get; set; }
-        //    public string lastModifiedDate { get; set; }
-        //    public string lastModifiedBy { get; set; }
-        //    public int companyid { get; set; }
-        //    public int criteriaid { get; set; }
-        //    public bool customerSpecific { get; set; }
-        //    public string enforcementPolicy { get; set; }
-        //    public string name { get; set; }
-        //    public string description { get; set; }
-        //    public bool validated { get; set; }
-        //    public string validatedStatus { get; set; }
-        //    public string validatedDate { get; set; }
-        //    public string validatedBy { get; set; }
-        //    public string validUntil { get; set; }
-        //    public State state { get; set; }
-        //    public string stateDateSince { get; set; }
-        //    public string stateDateUntil { get; set; }
-        //    public string notes { get; set; }
-        //    public object[] documents { get; set; }
-        //    public string criteriaType { get; set; }
-        //    public string languageid { get; set; }
-        //    public string languageLabel { get; set; }
-        //    public string languageCode { get; set; }
-        //    public string supportingInformation { get; set; }
-        //}
+//public class Email
+//{
+//    public int id { get; set; }
+//    public string emailAddress { get; set; }
+//    public object addressVerified { get; set; }
+//    public object dateVerified { get; set; }
+//    public bool primaryEmail { get; set; }
+//    public int typeid { get; set; }
+//}
 
-        //public class State
-        //{
-        //    public string _class { get; set; }
-        //    public int id { get; set; }
-        //    public bool defaultOption { get; set; }
-        //    public string description { get; set; }
-        //    public object l10nKey { get; set; }
-        //    public string name { get; set; }
-        //    public string nameKey { get; set; }
-        //}
+//public class Qualification
+//{
+//    public int id { get; set; }
+//    public string createdDate { get; set; }
+//    public string createdBy { get; set; }
+//    public string lastModifiedDate { get; set; }
+//    public string lastModifiedBy { get; set; }
+//    public int companyid { get; set; }
+//    public int criteriaid { get; set; }
+//    public bool customerSpecific { get; set; }
+//    public string enforcementPolicy { get; set; }
+//    public string name { get; set; }
+//    public string description { get; set; }
+//    public bool validated { get; set; }
+//    public string validatedStatus { get; set; }
+//    public string validatedDate { get; set; }
+//    public string validatedBy { get; set; }
+//    public string validUntil { get; set; }
+//    public State state { get; set; }
+//    public string stateDateSince { get; set; }
+//    public string stateDateUntil { get; set; }
+//    public string notes { get; set; }
+//    public object[] documents { get; set; }
+//    public string criteriaType { get; set; }
+//    public string languageid { get; set; }
+//    public string languageLabel { get; set; }
+//    public string languageCode { get; set; }
+//    public string supportingInformation { get; set; }
+//}
 
-        //public class Eligibility
-        //{
-        //    public int id { get; set; }
-        //    public string createdDate { get; set; }
-        //    public string createdBy { get; set; }
-        //    public string lastModifiedDate { get; set; }
-        //    public string lastModifiedBy { get; set; }
-        //    public int companyid { get; set; }
-        //    public int criteriaid { get; set; }
-        //    public bool? customerSpecific { get; set; }
-        //    public string enforcementPolicy { get; set; }
-        //    public string name { get; set; }
-        //    public string description { get; set; }
-        //    public bool validated { get; set; }
-        //    public string validatedStatus { get; set; }
-        //    public string validatedDate { get; set; }
-        //    public string validatedBy { get; set; }
-        //    public string validUntil { get; set; }
-        //    public State1 state { get; set; }
-        //    public string stateDateSince { get; set; }
-        //    public string stateDateUntil { get; set; }
-        //    public string notes { get; set; }
-        //    public object[] documents { get; set; }
-        //    public string criteriaType { get; set; }
-        //    public string languageid { get; set; }
-        //    public string languageLabel { get; set; }
-        //    public string languageCode { get; set; }
-        //    public string supportingInformation { get; set; }
-        //}
+//public class State
+//{
+//    public string _class { get; set; }
+//    public int id { get; set; }
+//    public bool defaultOption { get; set; }
+//    public string description { get; set; }
+//    public object l10nKey { get; set; }
+//    public string name { get; set; }
+//    public string nameKey { get; set; }
+//}
 
-        //public class State1
-        //{
-        //    public string _class { get; set; }
-        //    public int id { get; set; }
-        //    public bool defaultOption { get; set; }
-        //    public string description { get; set; }
-        //    public object l10nKey { get; set; }
-        //    public string name { get; set; }
-        //    public string nameKey { get; set; }
-        //}
+//public class Eligibility
+//{
+//    public int id { get; set; }
+//    public string createdDate { get; set; }
+//    public string createdBy { get; set; }
+//    public string lastModifiedDate { get; set; }
+//    public string lastModifiedBy { get; set; }
+//    public int companyid { get; set; }
+//    public int criteriaid { get; set; }
+//    public bool? customerSpecific { get; set; }
+//    public string enforcementPolicy { get; set; }
+//    public string name { get; set; }
+//    public string description { get; set; }
+//    public bool validated { get; set; }
+//    public string validatedStatus { get; set; }
+//    public string validatedDate { get; set; }
+//    public string validatedBy { get; set; }
+//    public string validUntil { get; set; }
+//    public State1 state { get; set; }
+//    public string stateDateSince { get; set; }
+//    public string stateDateUntil { get; set; }
+//    public string notes { get; set; }
+//    public object[] documents { get; set; }
+//    public string criteriaType { get; set; }
+//    public string languageid { get; set; }
+//    public string languageLabel { get; set; }
+//    public string languageCode { get; set; }
+//    public string supportingInformation { get; set; }
+//}
 
-   
+//public class State1
+//{
+//    public string _class { get; set; }
+//    public int id { get; set; }
+//    public bool defaultOption { get; set; }
+//    public string description { get; set; }
+//    public object l10nKey { get; set; }
+//    public string name { get; set; }
+//    public string nameKey { get; set; }
+//}
+
+
 
