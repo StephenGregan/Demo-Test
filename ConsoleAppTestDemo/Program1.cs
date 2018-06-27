@@ -10,19 +10,11 @@ using System.Threading.Tasks;
 namespace ConsoleAppTestDemo
 {
     class Program1
-
-    {
-        //public Program1()
-        //    {
-        //    Rootobject root = new Rootobject();
-        //    Primarynumber num = new Primarynumber();
-           
-        //    }
+    { 
         static void Main(String [] args)
         {
             var shows = LoginAndDeserializeJson();
             Console.WriteLine(shows);
-
         }
 
         public static List<Primarynumber> JsonParseCounties(string jsonText)
@@ -38,8 +30,8 @@ namespace ConsoleAppTestDemo
             {
                 var values = new NameValueCollection
             {
-                { "j_username", "patF@translation.ie" },
-                { "j_password", "Watchm3n" },
+                { "j_username", "[Username]" },
+                { "j_password", "[Password]" },
             };
                 Console.WriteLine("Validating username and password....\n");
 
@@ -47,15 +39,14 @@ namespace ConsoleAppTestDemo
                 client.UploadValues("https://tie.interpreterintelligence.com/j_spring_security_check", values);
                 Console.WriteLine("Successfully logged in to ii.....");
                 Console.WriteLine();
+
                 // Download desired page
                 var json = client.DownloadString("https://tie.interpreterintelligence.com:443/api/contact/1347");
-                Rootobject obj = new Rootobject();
-                Primarynumber num = new Primarynumber();
+                
                 foreach (Primarynumber c in JsonParseCounties(json))
                 {
-                    Console.WriteLine(json);
+                    Console.WriteLine(string.Format("{0}",c.id));
                 }
-
                 return json;
             }
 
@@ -90,18 +81,11 @@ namespace ConsoleAppTestDemo
 public class Rootobject
 {
     public Rootobject()
-
     {
-
         Counties = new List<Primarynumber>();
-
     }
 
-
-
-
-
-[JsonProperty("Everything")]
+    [JsonProperty("Everything")]
     public List<Primarynumber> Counties { get; set; }
 
    
